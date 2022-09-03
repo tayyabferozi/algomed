@@ -1,0 +1,35 @@
+* {
+  box-sizing: border-box;
+}
+
+.h-screen-wrap {
+  height: calc(100vh - 64px);
+}
+
+.layout-sidebar,
+.anamnesis-wrap {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    background-color: #fff;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #f2f2f2;
+    border-radius: 40px;
+  }
+}
+
+.right-wrap-main {
+  height: 100%;
+  overflow: hidden;
+}
+
+.right-wrap {
+  height: 100%;
+  .anamnesis-wrap {
+  }
+}
