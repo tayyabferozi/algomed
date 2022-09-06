@@ -40,9 +40,15 @@ export const Sidebar = () => {
   return (
     <div className="flex h-screen-wrap">
       <div
+        className={`lg:hidden fixed z-10 top-0 bottom-0 bg- w-[100%] opacity-50 bg-black ${
+          open ? "left-0" : "left-[-100%]"
+        }`}
+        onClick={() => setOpen(!open)}
+      ></div>
+      <div
         className={` ${
-          open ? "w-72" : "w-20 "
-        } bg-dark-purple h-screen p-5  pt-8 relative duration-300 layout-sidebar`}
+          open ? "lg:w-72 left-0" : "lg:w-20 -left-[288px]"
+        } bg-white h-screen p-5  pt-8 duration-300 layout-sidebar absolute lg:relative w-72 lg:left-0 z-10`}
       >
         <img
           src={require("./Images/control.png")}
@@ -67,18 +73,20 @@ export const Sidebar = () => {
             Ana(F) Pris(L)
           </h1>
         </div>
-        <div className={`${!open ? "hidden" : ""} mt-5`}>
-          <div>
+        <div className={`${!open ? "lg:hidden" : ""} mt-5`}>
+          <div className="flex align-top gap-5">
             <img
               className="block w-[50px] mb-[10px]"
               src="/user-avatar.svg"
               alt="avatar"
             />
+            <div>
+              <div>Name: Ana(F) Pris(L)</div>
+              <div>Age: 36</div>
+              <div>MR: 344-29867</div>
+              <div>Trans Female</div>
+            </div>
           </div>
-          <div>Name: Ana(F) Pris(L)</div>
-          <div>Age: 36</div>
-          <div>MR: 344-29867</div>
-          <div>Trans Female</div>
         </div>
         <ul className="pt-3">
           {menuItems.map((item, index) => (
@@ -93,7 +101,7 @@ export const Sidebar = () => {
               <img src={item.src} alt="icon" />
               <span
                 className={`${
-                  !open && "hidden"
+                  !open && "lg:hidden"
                 } origin-left duration-200 text-black`}
               >
                 {item.title}
@@ -102,7 +110,14 @@ export const Sidebar = () => {
           ))}
         </ul>
       </div>
-      <div className="h-screen flex-1 p-7 pb-0 right-wrap-main">
+      <div className="h-screen flex-1 lg:pt-7 pt-10 px-3 pb-0 right-wrap-main relative">
+        <img
+          src={require("./Images/control.png")}
+          className={`absolute cursor-pointer left-2 top-1 w-7 border-dark-purple lg:hidden block
+           border-2 rounded-full  ${!open && "rotate-180"}`}
+          onClick={() => setOpen(!open)}
+          alt="control"
+        />
         <Editor />
       </div>
     </div>
