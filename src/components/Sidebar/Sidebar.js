@@ -16,11 +16,15 @@ const menuItems = [
     title: "Medical History",
     src: "./Folder.png",
   },
-  { target: "lorem", title: "Active Prescriptions", src: "./Setting.png" },
-  { target: "lorem", title: "Allergies", src: "./Setting.png" },
-  { target: "lorem", title: "Hospitalization", src: "./Setting.png" },
-  { target: "lorem", title: "Lifestyle", src: "./Setting.png" },
-  { target: "lorem", title: "Immunization", src: "./Setting.png" },
+  {
+    target: "active-prescriptions",
+    title: "Active Prescriptions",
+    src: "./Setting.png",
+  },
+  { target: "allergies", title: "Allergies", src: "./Setting.png" },
+  { target: "hospitalizaion", title: "Hospitalization", src: "./Setting.png" },
+  { target: "lifestyle", title: "Lifestyle", src: "./Setting.png" },
+  { target: "immunization", title: "Immunization", src: "./Setting.png" },
 ];
 
 export const Sidebar = () => {
@@ -41,7 +45,7 @@ export const Sidebar = () => {
     <div className="flex h-screen-wrap">
       <div
         className={` ${
-          open ? "w-72" : "w-20 "
+          open ? "w-56" : "w-20 "
         } bg-dark-purple h-screen p-5  pt-8 relative duration-300 layout-sidebar`}
       >
         <img
@@ -85,10 +89,10 @@ export const Sidebar = () => {
             <li
               key={index}
               onClick={() => showSection(item.target)}
-              className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4 
+              className={`flex  rounded-md py-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4 
               ${item.gap ? "mt-5" : "mt-1"} ${
                 index === 0 && "bg-light-white"
-              } `}
+              } ${open ? "px-0" : "px-2"} `}
             >
               <img src={item.src} alt="icon" />
               <span
@@ -102,7 +106,7 @@ export const Sidebar = () => {
           ))}
         </ul>
       </div>
-      <div className="h-screen flex-1 p-7 pb-0 right-wrap-main">
+      <div className="h-screen flex-1 pt-[10px] pr-[10px] pl-0 pb-0 right-wrap-main">
         <Editor />
       </div>
     </div>
