@@ -1,10 +1,27 @@
+import { useState } from "react";
+
 const handleMessageChange = (event) => {};
 
 export const SuggestingTextbox = ({ dataTarget, title }) => {
+  const [suggestions, setSuggestions] = useState(false);
+
+  const inputChangeHandler = (e) => {
+    const { name, value } = e.target;
+
+    setSuggestions((prevState) => {
+      if (value.trim().length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+  };
+
   return (
     <div className="mt-[20px]" data-target={dataTarget}>
       <h6 className="font-bold mb-[4px]">{title}</h6>
       <textarea
+        onChangeCapture={inputChangeHandler}
         class="
                 form-control
                 block
@@ -29,6 +46,56 @@ export const SuggestingTextbox = ({ dataTarget, title }) => {
         name="HPI"
         onChange={handleMessageChange}
       ></textarea>
+
+      {suggestions && (
+        <div>
+          <h5 className="opacity-40 font-bold text-[14px]">
+            SUGGESTED FINDERS
+          </h5>
+
+          <div className="suggestions-main">
+            <div className="flex justify-between m-2 gap-[6px]">
+              <div className="flex gap-[8px]">
+                <div className="flex gap-[2px]">
+                  <div className="bg-indigo-600 rounded-md w-[8px] h-[22px]"></div>
+                  <div className="bg-indigo-600 rounded-md w-[8px] h-[22px]"></div>
+                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
+                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
+                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
+                </div>
+                <div className="opacity-70">Other constipation</div>
+              </div>
+
+              <button className="bg-indigo-600 rounded-md px-4 py-2">
+                <div className="tex flex gap-3">
+                  <div className="text-white text-lg">+</div>
+                  <span className="ms-3 text-white text-lg">Add</span>
+                </div>
+              </button>
+            </div>
+
+            <div className="flex justify-between m-2 gap-[6px]">
+              <div className="flex gap-[8px]">
+                <div className="flex gap-[2px]">
+                  <div className="bg-indigo-600 rounded-md w-[8px] h-[22px]"></div>
+                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
+                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
+                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
+                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
+                </div>
+                <div className="opacity-70">Abnormal weight loss</div>
+              </div>
+
+              <button className="bg-indigo-600 rounded-md px-4 py-2">
+                <div className="tex flex gap-3">
+                  <div className="text-white text-lg">+</div>
+                  <span className="ms-3 text-white text-lg">Add</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

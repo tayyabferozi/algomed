@@ -16,11 +16,15 @@ const menuItems = [
     title: "Medical History",
     src: "./Folder.png",
   },
-  { target: "lorem", title: "Active Prescriptions", src: "./Setting.png" },
-  { target: "lorem", title: "Allergies", src: "./Setting.png" },
-  { target: "lorem", title: "Hospitalization", src: "./Setting.png" },
-  { target: "lorem", title: "Lifestyle", src: "./Setting.png" },
-  { target: "lorem", title: "Immunization", src: "./Setting.png" },
+  {
+    target: "active-prescriptions",
+    title: "Active Prescriptions",
+    src: "./Setting.png",
+  },
+  { target: "allergies", title: "Allergies", src: "./Setting.png" },
+  { target: "hospitalizaion", title: "Hospitalization", src: "./Setting.png" },
+  { target: "lifestyle", title: "Lifestyle", src: "./Setting.png" },
+  { target: "immunization", title: "Immunization", src: "./Setting.png" },
 ];
 
 export const Sidebar = () => {
@@ -28,7 +32,6 @@ export const Sidebar = () => {
 
   const showSection = (target) => {
     const inputsWrap = $(".anamnesis-wrap");
-    const inputsWrapTop = inputsWrap.offset().top;
     const targetEl = $(`[data-target=${target}]`);
     // console.log(targetEl.offset().top - inputsWrapTop);
     console.log(targetEl.position().top + inputsWrap.scrollTop());
@@ -47,8 +50,8 @@ export const Sidebar = () => {
       ></div>
       <div
         className={` ${
-          open ? "lg:w-72 left-0" : "lg:w-20 -left-[288px]"
-        } bg-white h-screen p-5  pt-8 duration-300 layout-sidebar absolute lg:relative w-72 lg:left-0 z-10`}
+          open ? "lg:w-64 left-0" : "lg:w-20 -left-[288px]"
+        } bg-white h-screen p-5 pt-8 duration-300 layout-sidebar absolute lg:relative w-64 lg:left-0 z-10`}
       >
         <img
           src={require("./Images/control.png")}
@@ -93,10 +96,10 @@ export const Sidebar = () => {
             <li
               key={index}
               onClick={() => showSection(item.target)}
-              className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4 
+              className={`flex  rounded-md py-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4 
               ${item.gap ? "mt-5" : "mt-1"} ${
                 index === 0 && "bg-light-white"
-              } `}
+              } ${open ? "px-0" : "px-2"} `}
             >
               <img src={item.src} alt="icon" />
               <span
