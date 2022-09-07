@@ -36,14 +36,14 @@ export const Editor = () => {
           />
           <SuggestingTextbox dataTarget="lifestyle" title="Lifestyle" />
           <SuggestingTextbox dataTarget="immunization" title="Immunization" />
-          <div className="h-[13px] w-100 bg-white"></div>
+          {/* <div className="h-[13px] w-100 bg-white"></div> */}
         </div>
       </div>
 
       <div>
         <Split
           direction="vertical"
-          className="pb-[42px]"
+          className="pb-[26px]"
           style={{ height: `calc(100vh - 4rem)` }}
         >
           <div class="mb-[2px] xl:w-full bg-gray-300 ">
@@ -66,7 +66,7 @@ export const Editor = () => {
         <div class="gutter gutter-vertical h-[10px]"></div>
       </div>
 
-      <div class="mb-3 xl:w-full bg-gray-300">
+      <div class="xl:w-full bg-gray-300">
         <label
           for="exampleFormControlTextarea1"
           class="flex items-start form-label inline-block mb-2 text-gray-700"
