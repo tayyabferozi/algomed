@@ -55,12 +55,12 @@ export const Sidebar = () => {
       >
         <img
           src={require("./Images/control.png")}
-          className={`absolute cursor-pointer right-5 top-2 w-7 border-dark-purple
-           border-2 rounded-full  ${!open && "rotate-180"}`}
+          className={`absolute cursor-pointer top-2 w-7 border-dark-purple
+           border-2 rounded-full  ${!open ? "rotate-180 right-6" : "right-5"}`}
           onClick={() => setOpen(!open)}
           alt="control"
         />
-        <div className="flex gap-x-4 items-center">
+        {/* <div className="flex gap-x-4 items-center">
           <img
             src={Logo}
             className={`cursor-pointer duration-500 ${
@@ -75,8 +75,8 @@ export const Sidebar = () => {
           >
             Ana(F) Pris(L)
           </h1>
-        </div>
-        <div className={`${!open ? "lg:hidden" : ""} mt-5`}>
+        </div> */}
+        <div className={`${!open ? "lg:hidden" : ""} mt-3`}>
           <div className="flex align-top gap-5">
             <img
               className="block w-[50px] mb-[10px]"
