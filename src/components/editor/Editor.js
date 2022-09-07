@@ -6,7 +6,7 @@ export const Editor = () => {
   return (
     <Split className="flex right-wrap">
       <div class="flex justify-left bg-gray-300 anamnesis-wrap">
-        <div class="mb-3 w-full">
+        <div class="mb-3 w-full ">
           <label
             for="exampleFormControlTextarea1"
             class="flex items-start form-label inline-block mb-2 text-gray-700"
@@ -36,11 +36,16 @@ export const Editor = () => {
           />
           <SuggestingTextbox dataTarget="lifestyle" title="Lifestyle" />
           <SuggestingTextbox dataTarget="immunization" title="Immunization" />
+          <div className="h-[13px] w-100 bg-white"></div>
         </div>
       </div>
 
       <div>
-        <Split direction="vertical" style={{ height: `calc(100vh - 4rem)` }}>
+        <Split
+          direction="vertical"
+          className="pb-[42px]"
+          style={{ height: `calc(100vh - 4rem)` }}
+        >
           <div class="mb-[2px] xl:w-full bg-gray-300 ">
             <label
               for="exampleFormControlTextarea1"
@@ -58,6 +63,7 @@ export const Editor = () => {
             </label>
           </div>
         </Split>
+        <div class="gutter gutter-vertical h-[10px]"></div>
       </div>
 
       <div class="mb-3 xl:w-full bg-gray-300">

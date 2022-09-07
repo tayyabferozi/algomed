@@ -35,9 +35,7 @@ export const Sidebar = () => {
     const targetEl = $(`[data-target=${target}]`);
     // console.log(targetEl.offset().top - inputsWrapTop);
     console.log(targetEl.position().top + inputsWrap.scrollTop());
-    inputsWrap.scrollTop(
-      targetEl.position().top + inputsWrap.scrollTop() - 64 - 28
-    );
+    inputsWrap.scrollTop(targetEl.position().top + inputsWrap.scrollTop() - 20);
   };
 
   return (
@@ -113,7 +111,7 @@ export const Sidebar = () => {
           ))}
         </ul>
       </div>
-      <div className="h-screen flex-1 lg:pt-7 pt-10 px-3 pb-0 right-wrap-main relative">
+      <div className="h-screen flex-1 lg:pt-7 pt-10 px-3 pb-0 pl-0 right-wrap-main relative">
         <img
           src={require("./Images/control.png")}
           className={`absolute cursor-pointer left-2 top-1 w-7 border-dark-purple lg:hidden block
