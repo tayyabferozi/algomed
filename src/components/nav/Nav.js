@@ -10,6 +10,27 @@ import Register from "./Signup";
 import Signin from "./Signin";
 import { logout } from "../../store/slices/authSlice";
 import ManageProfile from "./ManageProfile";
+import ManageUsers from "./ManageUsers";
+
+const navItems = [
+  {
+    href: "/about",
+    label: "About",
+  },
+  {
+    href: "/products",
+    label: "Products",
+  },
+  {
+    href: "/company",
+    label: "Company",
+  },
+  {
+    href: "/diagnosis",
+    label: "Diagnosis",
+    authRoute: true,
+  },
+];
 
 export const Nav = () => {
   // const { pathname } = useRouter();
@@ -17,6 +38,7 @@ export const Nav = () => {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showUpdateProfileModal, setShowUpdateProfileModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showManageUsersModal, setShowManageUsersModal] = useState(true);
   const [showOverlay, setShowOverlay] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -29,6 +51,7 @@ export const Nav = () => {
     setShowLoginModal(false);
     setShowRegisterModal(false);
     setShowUpdateProfileModal(false);
+    setShowManageUsersModal(false);
   };
 
   const toggleModals = () => {
@@ -61,10 +84,11 @@ export const Nav = () => {
         <Signin toggleModals={toggleModals} closeModal={closeModals} />
       )}
       {showUpdateProfileModal && <ManageProfile closeModal={closeModals} />}
+      {showManageUsersModal && <ManageUsers closeModal={closeModals} />}
       <div>
         <nav className="bg-gray-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-3 h-16">
+            <div className="lg:grid grid-cols-3 flex justify-between items-center h-16">
               {/* <div className="flex items-center"> */}
               <Link to="/" className="flex-shrink-0 flex items-center gap-3">
                 <div className="text-[20px] text-white">Algomed</div>
@@ -76,25 +100,7 @@ export const Nav = () => {
               </Link>
               <div className="hidden md:flex align-center">
                 <div className="ml-10 flex items-center space-x-4">
-                  {[
-                    {
-                      href: "/about",
-                      label: "About",
-                    },
-                    {
-                      href: "/products",
-                      label: "Products",
-                    },
-                    {
-                      href: "/company",
-                      label: "Company",
-                    },
-                    {
-                      href: "/diagnosis",
-                      label: "Diagnosis",
-                      authRoute: true,
-                    },
-                  ].map((el, idx) => {
+                  {navItems.map((el, idx) => {
                     const { href, label, authRoute } = el;
 
                     if (authRoute && !token) {
@@ -122,7 +128,7 @@ export const Nav = () => {
                   })}
                 </div>
               </div>
-              <div className="flex justify-end items-center">
+              <div className="justify-end items-center lg:flex hidden">
                 {token ? (
                   <div class="relative inline-block text-left">
                     <div>
@@ -180,6 +186,8 @@ export const Nav = () => {
                             tabindex="-1"
                             onClick={() => {
                               setShowDropdown(false);
+                              setShowManageUsersModal(true);
+                              setShowOverlay(true);
                             }}
                           >
                             Manage Users
@@ -200,15 +208,6 @@ export const Nav = () => {
                     )}
                   </div>
                 ) : (
-                  // <button
-                  //   className="bg-transparent text-white px-5 py-2 rounded-lg hover:text-slate-300"
-                  //   onClick={() => {
-                  //     logoutHandler();
-                  //   }}
-                  // >
-                  //   {" "}
-                  //   Sign Out
-                  // </button>
                   <>
                     {" "}
                     <button
@@ -293,26 +292,25 @@ export const Nav = () => {
             {(ref) => (
               <div className="md:hidden" id="mobile-menu">
                 <div ref={ref} className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                  <a
-                    href="#0"
-                    className="hover:bg-gray-700 text-white block px-3 py-2 rounded-md text-base font-medium"
-                  >
-                    Dashboard
-                  </a>
+                  {navItems.map((el, idx) => {
+                    const { label, href, authRoute } = el;
 
-                  <a
-                    href="#0"
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
-                  >
-                    Team
-                  </a>
+                    if (authRoute && !token) {
+                      return (
+                        <React.Fragment key={"nav-item" + idx}></React.Fragment>
+                      );
+                    }
 
-                  <a
-                    href="#0"
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
-                  >
-                    Projects
-                  </a>
+                    return (
+                      <NavLink
+                        key={"mobile-item" + idx}
+                        to={href}
+                        className="hover:bg-gray-700 text-white block px-3 py-2 rounded-md text-base font-medium"
+                      >
+                        {label}
+                      </NavLink>
+                    );
+                  })}
                 </div>
               </div>
             )}

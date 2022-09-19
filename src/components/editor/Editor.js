@@ -6,7 +6,7 @@ export const Editor = ({ isSideNavOpen }) => {
   return (
     <>
       {!isSideNavOpen && (
-        <div className="flex gap-8 mb-2">
+        <div className="ml-16 lg:ml-4 flex gap-8 mb-2">
           <div>Name: Ana(F) Pris(L)</div>
           <div>Age: 36</div>
           <div>MR: 344-29867</div>

@@ -122,7 +122,7 @@ export const Sidebar = () => {
       <div className="h-screen flex-1 py-3 px-3 pl-0 right-wrap-main relative">
         <img
           src={require("./Images/control.png")}
-          className={`absolute cursor-pointer left-2 top-1 w-7 border-dark-purple lg:hidden block
+          className={`absolute cursor-pointer left-5 top-[9px] w-7 border-dark-purple lg:hidden block
            border-2 rounded-full  ${!open && "rotate-180"}`}
           onClick={() => setOpen(!open)}
           alt="control"
