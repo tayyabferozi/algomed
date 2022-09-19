@@ -2,6 +2,16 @@
   box-sizing: border-box;
 }
 
+::-webkit-scrollbar {
+  width: 4px;
+  background-color: #fff;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #eeeeee;
+  border-radius: 40px;
+}
+
 .h-screen-wrap {
   height: calc(100vh - 64px);
 }
@@ -11,16 +21,6 @@
   overflow-y: auto;
   overflow-x: hidden;
   height: 100%;
-
-  &::-webkit-scrollbar {
-    width: 4px;
-    background-color: #fff;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #eeeeee;
-    border-radius: 40px;
-  }
 }
 
 .anamnesis-wrap {
@@ -52,5 +52,17 @@
   }
 
   .anamnesis-wrap {
+  }
+}
+
+.Toastify__toast-body {
+  align-items: flex-start;
+
+  .Toastify__toast-icon {
+    margin-top: 4px;
+  }
+
+  * {
+    font-size: 14px;
   }
 }

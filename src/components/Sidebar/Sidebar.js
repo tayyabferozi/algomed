@@ -1,8 +1,7 @@
 import { useState } from "react";
 import $ from "jquery";
 
-import { Editor } from "..//editor/Editor";
-import Logo from "./Images/logo.png";
+import { Editor } from "../editor/Editor";
 
 const menuItems = [
   // { title: "Dashboard", src: "./Chart_fill.png" },
@@ -33,8 +32,6 @@ export const Sidebar = () => {
   const showSection = (target) => {
     const inputsWrap = $(".anamnesis-wrap");
     const targetEl = $(`[data-target=${target}]`);
-    // console.log(targetEl.offset().top - inputsWrapTop);
-    console.log(targetEl.position().top + inputsWrap.scrollTop());
     inputsWrap.scrollTop(
       targetEl.position().top + inputsWrap.scrollTop() - 64 - 28
     );
@@ -87,7 +84,16 @@ export const Sidebar = () => {
               <div>Name: Ana(F) Pris(L)</div>
               <div>Age: 36</div>
               <div>MR: 344-29867</div>
-              <div>Trans Female</div>
+              <div>
+                <select defaultValue={"trans-female"}>
+                  <option>Female</option>
+                  <option>Male</option>
+                  <option>Female GI - M</option>
+                  <option>Male GI - F</option>
+                  <option value={"trans-female"}>Trans Female</option>
+                  <option>Trans Male</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -113,7 +119,7 @@ export const Sidebar = () => {
           ))}
         </ul>
       </div>
-      <div className="h-screen flex-1 lg:pt-7 pt-10 px-3 pb-0 right-wrap-main relative">
+      <div className="h-screen flex-1 pt-3 pb-3 pe-3 right-wrap-main relative">
         <img
           src={require("./Images/control.png")}
           className={`absolute cursor-pointer left-2 top-1 w-7 border-dark-purple lg:hidden block
@@ -121,7 +127,7 @@ export const Sidebar = () => {
           onClick={() => setOpen(!open)}
           alt="control"
         />
-        <Editor />
+        <Editor isSideNavOpen={open} />
       </div>
     </div>
   );

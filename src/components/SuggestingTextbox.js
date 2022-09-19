@@ -22,7 +22,7 @@ export const SuggestingTextbox = ({ dataTarget, title }) => {
       <h6 className="font-bold mb-[4px]">{title}</h6>
       <textarea
         onChangeCapture={inputChangeHandler}
-        class="
+        className="
                 form-control
                 block
                 w-full
@@ -49,45 +49,43 @@ export const SuggestingTextbox = ({ dataTarget, title }) => {
 
       {suggestions && (
         <div>
-          <h5 className="opacity-40 font-bold text-[14px]">
-            SUGGESTED FINDERS
-          </h5>
+          <h5 NameName="opacity-40 font-bold text-[14px]">SUGGESTED FINDERS</h5>
 
-          <div className="suggestions-main">
-            <div className="flex justify-between m-2 gap-[6px]">
-              <div className="flex gap-[8px]">
-                <div className="flex gap-[2px]">
-                  <div className="bg-indigo-600 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-indigo-600 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
+          <div NameName="suggestions-main">
+            <div NameName="flex justify-between m-2 gap-[6px]">
+              <div NameName="flex gap-[8px]">
+                <div NameName="flex gap-[2px]">
+                  <div NameName="bg-indigo-600 rounded-md w-[8px] h-[22px]"></div>
+                  <div NameName="bg-indigo-600 rounded-md w-[8px] h-[22px]"></div>
+                  <div NameName="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
+                  <div NameName="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
+                  <div NameName="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
                 </div>
-                <div className="opacity-70">Other constipation</div>
+                <div NameName="opacity-70">Other constipation</div>
               </div>
 
-              <button className="bg-indigo-600 rounded-md px-4 py-2">
-                <div className="tex flex gap-3">
-                  <div className="text-white text-lg">+</div>
-                  <span className="ms-3 text-white text-lg">Add</span>
+              <button NameName="bg-indigo-600 rounded-md px-4 py-2">
+                <div NameName="tex flex gap-3">
+                  <div NameName="text-white text-lg">+</div>
+                  <span NameName="ms-3 text-white text-lg">Add</span>
                 </div>
               </button>
             </div>
 
-            <div className="flex justify-between m-2 gap-[6px]">
-              <div className="flex gap-[8px]">
-                <div className="flex gap-[2px]">
-                  <div className="bg-indigo-600 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
+            <div NameName="flex justify-between m-2 gap-[6px]">
+              <div NameName="flex gap-[8px]">
+                <div NameName="flex gap-[2px]">
+                  <div NameName="bg-indigo-600 rounded-md w-[8px] h-[22px]"></div>
+                  <div NameName="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
+                  <div NameName="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
+                  <div NameName="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
+                  <div NameName="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
                 </div>
-                <div className="opacity-70">Abnormal weight loss</div>
+                <div NameName="opacity-70">Abnormal weight loss</div>
               </div>
 
-              <button className="bg-indigo-600 rounded-md px-4 py-2">
-                <div className="tex flex gap-3">
+              <button NameName="bg-indigo-600 rounded-md px-4 py-2">
+                <div NameName="tex flex gap-3">
                   <div className="text-white text-lg">+</div>
                   <span className="ms-3 text-white text-lg">Add</span>
                 </div>
