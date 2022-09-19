@@ -6,10 +6,10 @@ export const Editor = ({ isSideNavOpen }) => {
   return (
     <>
       {!isSideNavOpen && (
-        <div className="ml-16 lg:ml-4 flex gap-8 mb-2">
-          <div>Name: Ana(F) Pris(L)</div>
-          <div>Age: 36</div>
-          <div>MR: 344-29867</div>
+        <div className="ml-10 lg:ml-4 flex gap-5 sm:gap-8 mb-2">
+          <div className="text-xs sm:text-sm">Name: Ana(F) Pris(L)</div>
+          <div className="text-xs sm:text-sm">Age: 36</div>
+          <div className="text-xs sm:text-sm">MR: 344-29867</div>
         </div>
       )}
       <Split className="flex right-wrap">
