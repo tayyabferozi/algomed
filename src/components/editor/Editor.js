@@ -17,7 +17,7 @@ export const Editor = ({ isSideNavOpen }) => {
           <div className="mb-3 w-full">
             <label
               htmlFor="exampleFormControlTextarea1"
-              className="flex items-start form-label inline-block mb-2 text-gray-700"
+              className="flex items-start form-label mb-2 text-gray-700"
             >
               Anamnesis
             </label>

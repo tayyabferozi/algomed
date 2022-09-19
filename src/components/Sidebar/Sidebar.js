@@ -52,7 +52,7 @@ export const Sidebar = () => {
       >
         <img
           src={require("./Images/control.png")}
-          className={`absolute cursor-pointer top-2 w-7 border-dark-purple
+          className={`absolute cursor-pointer top-3 w-7 border-dark-purple
            border-2 rounded-full  ${!open ? "rotate-180 right-6" : "right-5"}`}
           onClick={() => setOpen(!open)}
           alt="control"
@@ -119,7 +119,7 @@ export const Sidebar = () => {
           ))}
         </ul>
       </div>
-      <div className="h-screen flex-1 pt-3 pb-3 pe-3 right-wrap-main relative">
+      <div className="h-screen flex-1 py-3 px-3 pl-0 right-wrap-main relative">
         <img
           src={require("./Images/control.png")}
           className={`absolute cursor-pointer left-2 top-1 w-7 border-dark-purple lg:hidden block
