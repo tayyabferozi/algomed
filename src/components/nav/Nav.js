@@ -38,7 +38,7 @@ export const Nav = () => {
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showUpdateProfileModal, setShowUpdateProfileModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [showManageUsersModal, setShowManageUsersModal] = useState(true);
+  const [showManageUsersModal, setShowManageUsersModal] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
 
