@@ -34,7 +34,7 @@ const navItems = [
 
 export const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showRegisterModal, setShowRegisterModal] = useState(true);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showUpdateProfileModal, setShowUpdateProfileModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showManageUsersModal, setShowManageUsersModal] = useState(false);
