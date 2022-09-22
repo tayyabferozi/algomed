@@ -1,9 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Provider } from "react-redux";
 
-import "./App.css";
 import "./styles/styles.scss";
 
 import { Nav } from "./components/nav/Nav";
@@ -12,11 +11,21 @@ import About from "./pages/About";
 import Products from "./pages/Products";
 import Company from "./pages/Company";
 import Diagnosis from "./pages/Diagnosis";
-import store from "./store";
+import axios from "axios";
+import { useEffect } from "react";
+import checkAuthState from "./utils/check-auth-state";
+import { login } from "./store/slices/authSlice";
 
 function App() {
+  const dispatch = useDispatch();
+  axios.defaults.baseURL = "http://20.169.80.243/algomed";
+
+  useEffect(() => {
+    dispatch(login(checkAuthState()));
+  }, [dispatch]);
+
   return (
-    <Provider store={store}>
+    <>
       <ToastContainer />
       <Router>
         <Routes>
@@ -29,7 +38,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
-    </Provider>
+    </>
   );
 }
 

@@ -36,26 +36,26 @@ const ManageUsers = ({ closeModal }) => {
             </button>
           </div>
 
-          <div class="overflow-x-auto relative">
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-              <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <div className="overflow-x-auto relative">
+            <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <th scope="col" class="py-3 px-6">
+                  <th scope="col" className="py-3 px-6">
                     Name
                   </th>
-                  <th scope="col" class="py-3 px-6">
+                  <th scope="col" className="py-3 px-6">
                     Email
                   </th>
-                  <th scope="col" class="py-3 px-6">
+                  <th scope="col" className="py-3 px-6">
                     Role
                   </th>
-                  <th scope="col" class="py-3 px-6">
+                  <th scope="col" className="py-3 px-6">
                     Coder
                   </th>
-                  <th scope="col" class="py-3 px-6">
+                  <th scope="col" className="py-3 px-6">
                     Admin
                   </th>
-                  <th scope="col" class="py-3 px-6">
+                  <th scope="col" className="py-3 px-6">
                     Actions
                   </th>
                 </tr>
@@ -73,34 +73,37 @@ const ManageUsers = ({ closeModal }) => {
                   const { name, email, role, coder, admin } = el;
 
                   return (
-                    <tr key={"user" + idx} class="bg-white dark:bg-gray-800">
+                    <tr
+                      key={"user" + idx}
+                      className="bg-white dark:bg-gray-800"
+                    >
                       <th
                         scope="row"
-                        class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                       >
                         {name}
                       </th>
-                      <td class="py-4 px-6">{email}</td>
-                      <td class="py-4 px-6">{role}</td>
-                      <td class="py-4 px-6">
+                      <td className="py-4 px-6">{email}</td>
+                      <td className="py-4 px-6">{role}</td>
+                      <td className="py-4 px-6">
                         <input
                           id="default-checkbox"
                           type="checkbox"
                           value=""
-                          class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                           defaultChecked={coder}
                         />
                       </td>
-                      <td class="py-4 px-6">
+                      <td className="py-4 px-6">
                         <input
                           id="default-checkbox"
                           type="checkbox"
                           value=""
-                          class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                           defaultChecked={admin}
                         />
                       </td>
-                      <td class="py-4 px-6">
+                      <td className="py-4 px-6">
                         <button className="bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                           Delete
                         </button>

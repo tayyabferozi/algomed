@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import Confirm from "../../Confirm";
 
 const ManageProfile = ({ toggleModals, closeModal }) => {
   const [formState, setFormState] = useState({
     role: "physician",
   });
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const inputChangeHandler = (e) => {
     const { name, value } = e.target;
@@ -15,6 +17,15 @@ const ManageProfile = ({ toggleModals, closeModal }) => {
         [name]: value,
       };
     });
+  };
+
+  const onConfirm = () => {
+    onCancel();
+    closeModal();
+  };
+
+  const onCancel = () => {
+    setShowConfirmModal(false);
   };
 
   const formSubmitHandler = (e) => {
@@ -29,6 +40,9 @@ const ManageProfile = ({ toggleModals, closeModal }) => {
 
   return (
     <>
+      {showConfirmModal && (
+        <Confirm onConfirm={onConfirm} onCancel={onCancel} />
+      )}
       <div className="w-full max-w-md fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-20 max-h-[90vh] overflow-y-auto">
         <div className="bg-slate-100 rounded-t font-bold text-xl px-8 py-4">
           <div className="text-700">Update Profile</div>
@@ -145,10 +159,10 @@ const ManageProfile = ({ toggleModals, closeModal }) => {
               className="shadow h-[38px] border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="role"
               type="text"
-              name="role"
+              name="profession"
               placeholder="Role"
               onChange={inputChangeHandler}
-              value={formState.role}
+              value={formState.profession}
             >
               <option value="physician">Physician</option>
               <option value="nurse-practioner">Nurse Practioner</option>
@@ -162,7 +176,7 @@ const ManageProfile = ({ toggleModals, closeModal }) => {
               <option value="health-executive">Health Executive</option>
             </select>
           </div>
-          {formState.role === "physician" && (
+          {formState.profession === "physician" && (
             <div className="mb-3">
               <label
                 className="block text-gray-700 text-sm font-bold mb-1"
@@ -267,8 +281,11 @@ const ManageProfile = ({ toggleModals, closeModal }) => {
               Update
             </button>
             <button
+              type="button"
               className="bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              onClick={closeModal}
+              onClick={() => {
+                setShowConfirmModal(true);
+              }}
             >
               Delete
             </button>

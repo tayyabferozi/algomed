@@ -1,11 +1,21 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import { login } from "../../../store/slices/authSlice";
+import isEmpty from "../../../utils/is-empty";
+import setAuthHeader from "../../../utils/set-auth-header";
+
+const initialFormState = {
+  email: "",
+  password: "",
+};
 
 const Signin = ({ toggleModals, closeModal }) => {
-  const [formState, setFormState] = useState({});
+  const [formState, setFormState] = useState(initialFormState);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -23,11 +33,45 @@ const Signin = ({ toggleModals, closeModal }) => {
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
-    closeModal();
+    axios
+      .post("/accounts/authenticate", formState)
+      .then((res) => {
+        res.data.token = res.data.jwtToken;
+        setAuthHeader(res.data.token);
+        localStorage.setItem("ALGOMED_USER", JSON.stringify(res.data));
 
-    dispatch(login());
-    navigate("/diagnosis");
+        dispatch(login(res.data));
+        navigate("/diagnosis");
+        closeModal();
+      })
+      .catch((err) => {
+        console.log(err);
+
+        if (err.response.data) {
+          if (!isEmpty(err.response.data?.errors)) {
+            for (const key in err.response.data?.errors) {
+              if (Object.hasOwnProperty.call(err.response.data?.errors, key)) {
+                let element = err.response.data?.errors[key];
+
+                if (typeof element === "object") {
+                  element = element[0];
+                }
+
+                toast.error(element);
+              }
+            }
+          } else if (!isEmpty(err.response.data?.message)) {
+            toast.error(err.response.data?.message);
+          } else {
+            toast.error("Uh Oh! Something went wrong!");
+          }
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -51,6 +95,9 @@ const Signin = ({ toggleModals, closeModal }) => {
             id="email"
             type="text"
             placeholder=""
+            name="email"
+            value={formState.email}
+            onChange={inputChangeHandler}
           />
         </div>
         <div className="mb-3">
@@ -65,13 +112,19 @@ const Signin = ({ toggleModals, closeModal }) => {
               className="shadow  border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
               id="password"
               type="password"
-              placeholder="******************"
+              placeholder="*********"
+              name="password"
+              value={formState.password}
+              onChange={inputChangeHandler}
             />
           </div>
         </div>
 
         <div className="flex items-center gap-5">
-          <button className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+          <button
+            disabled={isLoading}
+            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-60 disabled:pointer-events-none"
+          >
             Login
           </button>
           <a
