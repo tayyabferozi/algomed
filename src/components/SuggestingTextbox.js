@@ -1,12 +1,22 @@
+import axios from "axios";
+import { useSelector } from "react-redux";
 import { useState } from "react";
 
 const handleMessageChange = (event) => {};
 
 export const SuggestingTextbox = ({ dataTarget, title }) => {
+  const { id } = useSelector((state) => state.auth);
+
   const [suggestions, setSuggestions] = useState(false);
 
   const inputChangeHandler = (e) => {
     const { name, value } = e.target;
+
+    console.log({ id, Anamnesis: value });
+
+    axios.get("/diagnosis/getworkup", { id, Anamnesis: value }).then((res) => {
+      console.log(res);
+    });
 
     setSuggestions((prevState) => {
       if (value.trim().length > 0) {
