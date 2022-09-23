@@ -42,7 +42,7 @@ export const Nav = () => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const dispatch = useDispatch();
-  const { token } = useSelector((state) => state.auth);
+  const { token, role } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   const closeModals = () => {
@@ -179,18 +179,20 @@ export const Nav = () => {
                           >
                             Manage Profile
                           </button>
-                          <button
-                            className="text-gray-700 block w-full px-4 py-2 text-left text-sm"
-                            role="menuitem"
-                            tabindex="-1"
-                            onClick={() => {
-                              setShowDropdown(false);
-                              setShowManageUsersModal(true);
-                              setShowOverlay(true);
-                            }}
-                          >
-                            Manage Users
-                          </button>
+                          {role === "Admin" && (
+                            <button
+                              className="text-gray-700 block w-full px-4 py-2 text-left text-sm"
+                              role="menuitem"
+                              tabindex="-1"
+                              onClick={() => {
+                                setShowDropdown(false);
+                                setShowManageUsersModal(true);
+                                setShowOverlay(true);
+                              }}
+                            >
+                              Manage Users
+                            </button>
+                          )}
                           <button
                             className="text-gray-700 block w-full px-4 py-2 text-left text-sm"
                             role="menuitem"

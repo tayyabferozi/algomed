@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import PlacesAutocomplete from "react-places-autocomplete";
-import { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useEffect } from "react";
@@ -28,33 +27,28 @@ const initialFormState = {
   email: "",
   password: "",
   confirmPassword: "",
-  acceptTerms: false,
+  acceptTerms: true,
   Profession: "",
   Specialty: "",
-  // Organization: "",
-  // Address: "",
-  EHR: "",
+  EHR: "Epic",
+  EHRText: "",
   country: "",
   state: "",
-  Address: "30210 bev hills",
-  Organization: "Sutter Health",
+  Address: "",
+  Organization: "",
 };
 
 const Signup = ({ toggleModals, closeModal }) => {
   const [formState, setFormState] = useState(initialFormState);
   const [isLoading, setIsLoading] = useState(false);
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [specialties, setSpecialties] = useState([]);
 
   const handleChange = (address) => {
     setFormState((prevState) => {
       return { ...prevState, Address: address };
     });
-  };
-
-  const handleSelect = (address) => {
-    geocodeByAddress(address)
-      .then((results) => getLatLng(results[0]))
-      .then((latLng) => console.log("Success", latLng))
-      .catch((error) => console.error("Error", error));
   };
 
   const inputChangeHandler = (e) => {
@@ -80,11 +74,15 @@ const Signup = ({ toggleModals, closeModal }) => {
     e.preventDefault();
 
     setIsLoading(true);
+    setFormState((prevState) => ({ ...prevState, acceptTerms: true }));
+
+    if (formState.EHR === "other") {
+      setFormState((prevState) => ({ EHR: prevState.EHRText }));
+    }
 
     axios
       .post("/accounts/register", formState)
       .then((res) => {
-        console.log(res.data);
         closeModal();
         toast.success(
           "Algomed is in closed Beta. Your request has been received. We typically respond within 24 hours. Please check your email inbox and spam folder for an invitation to login."
@@ -115,10 +113,87 @@ const Signup = ({ toggleModals, closeModal }) => {
       });
   };
 
+  // GET SURGEON SPECIALITIES
+
   useEffect(() => {
-    // axios.get("/accounts/countries").then((res) => {
-    //   console.log(res.data);
-    // });
+    setSpecialties([]);
+    axios
+      .get(`/accounts/MedicalSpecialties`)
+      .then((res) => {
+        let dataRaw = res.data;
+
+        const data = dataRaw.match(/[^\d|:|[{|,|}|\]\\"]+/g);
+
+        setSpecialties(data);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(
+          "Uh Oh! Something went wrong while fetching the specialties list"
+        );
+      });
+  }, []);
+
+  // GET STATES
+
+  useEffect(() => {
+    setStates([]);
+    if (formState.country)
+      axios
+        .get(`/accounts/getstate?countryCode=${formState.country}`)
+        .then((res) => {
+          let dataRaw = res.data;
+
+          let dataRawStep1 = dataRaw.replace(/{/g, '{"');
+          let dataRawStep2 = dataRawStep1.replace(/:/g, '":"');
+          let dataRawStep3 = dataRawStep2.replace(/}/g, '"}');
+
+          const data = JSON.parse(dataRawStep3);
+
+          const altData = data.map((el, idx) => {
+            const key = Object.keys(el)[0];
+
+            return { label: key, val: el[key] };
+          });
+
+          setStates(altData);
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error(
+            "Uh Oh! Something went wrong while fetching the states list"
+          );
+        });
+  }, [formState.country]);
+
+  // GET COUNTRIES
+
+  useEffect(() => {
+    axios
+      .get("/accounts/countries")
+      .then((res) => {
+        let dataRaw = res.data;
+
+        let dataRawStep1 = dataRaw.replace(/{/g, '{"');
+        let dataRawStep2 = dataRawStep1.replace(/:/g, '":"');
+        let dataRawStep3 = dataRawStep2.replace(/}/g, '"}');
+
+        const data = JSON.parse(dataRawStep3);
+
+        const altData = data.map((el, idx) => {
+          const key = Object.keys(el)[0];
+
+          return { label: key, val: el[key] };
+        });
+
+        setCountries(altData);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(
+          "Uh Oh! Something went wrong while fetching the countries list"
+        );
+      });
   }, []);
 
   return (
@@ -140,7 +215,7 @@ const Signup = ({ toggleModals, closeModal }) => {
                 Title
               </label>
               <select
-                className="shadow h-[38px] border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow h-[38px] border rounded w-full  px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="title"
                 type="text"
                 placeholder="title"
@@ -149,6 +224,7 @@ const Signup = ({ toggleModals, closeModal }) => {
                 value={formState.title}
               >
                 <option value="">Select an option</option>
+                <option value="Proff">Proff.</option>
                 <option value="Dr">Dr.</option>
                 <option value="Mr">Mr.</option>
                 <option value="Mrs">Mrs.</option>
@@ -251,17 +327,22 @@ const Signup = ({ toggleModals, closeModal }) => {
               Country
             </label>
             <select
-              className="shadow h-[38px] border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow h-[38px] border rounded w-full px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="country"
               type="text"
               placeholder="country"
-              name="title"
+              name="country"
               onChange={inputChangeHandler}
               value={formState.country}
             >
-              <option value="">Select an option</option>
-              <option value="options-1">Option 1</option>
-              <option value="options-2">Option 2</option>
+              <option value="">Choose a country</option>
+              {countries.map((el, idx) => {
+                return (
+                  <option key={"country" + idx} value={el.val}>
+                    {el.label}
+                  </option>
+                );
+              })}
             </select>
           </div>
           <div className="mb-3">
@@ -272,7 +353,7 @@ const Signup = ({ toggleModals, closeModal }) => {
               State
             </label>
             <select
-              className="shadow h-[38px] border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow h-[38px] border rounded w-full px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               id="state"
               type="text"
               placeholder="state"
@@ -280,118 +361,54 @@ const Signup = ({ toggleModals, closeModal }) => {
               onChange={inputChangeHandler}
               value={formState.state}
             >
-              <option value="">Select an option</option>
-              <option value="options-1">Option 1</option>
-              <option value="options-2">Option 2</option>
+              <option value="">Choose a state</option>
+              {states.length === 0 ? (
+                formState.country ? (
+                  <option>Loading...</option>
+                ) : (
+                  <option disabled>Choose a country to see states...</option>
+                )
+              ) : (
+                ""
+              )}
+              {states.map((el, idx) => {
+                return (
+                  <option key={"state" + idx} value={el.val}>
+                    {el.label}
+                  </option>
+                );
+              })}
             </select>
           </div>
           <div className="mb-3">
             <label
               className="block text-gray-700 text-sm font-bold mb-1"
-              htmlFor="profession"
+              htmlFor="email"
             >
-              Profession
+              Main Healthcare Organization Affiliation
             </label>
-            <select
-              className="shadow h-[38px] border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="profession"
+            <input
+              className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="email"
               type="text"
-              name="Profession"
-              placeholder="Profession"
+              placeholder=""
+              name="Organization"
               onChange={inputChangeHandler}
-              value={formState.Profession}
-            >
-              <option value="">Select an option</option>
-              <option value="physician">Physician</option>
-              <option value="nurse-practioner">Nurse Practioner</option>
-              <option value="registered-nurse">Registered Nurse</option>
-              <option value="health-informatics-engineer">
-                Health Informatics Engineer
-              </option>
-              <option value="appointment-schedular">
-                Appointment Schedular
-              </option>
-              <option value="health-executive">Health Executive</option>
-            </select>
+              value={formState.Organization}
+            />
           </div>
-          {formState.Profession === "physician" && (
-            <div className="mb-3">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-1"
-                htmlFor="state"
-              >
-                Speciality
-              </label>
-              <select
-                className="shadow h-[38px] border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="state"
-                type="text"
-                placeholder="state"
-                name="Specialty"
-                onChange={inputChangeHandler}
-                value={formState.Specialty}
-              >
-                <option value="">Select an option</option>
-                <option value="options-1">Option 1</option>
-                <option value="options-2">Option 2</option>
-              </select>
-            </div>
-          )}
-          <div className="mb-3">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-1"
-              htmlFor="EHR"
-            >
-              Primary EHR Vendor
-            </label>
-            <select
-              className="shadow h-[38px] border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="EHR"
-              type="text"
-              name="EHR"
-              placeholder="Primary Vendor"
-              value={formState.EHR}
-              onChange={inputChangeHandler}
-            >
-              <option value="">Select an option</option>
-              <option value="epic">Epic</option>
-              <option value="cerner">Cerner</option>
-              <option value="meditech">Meditech</option>
-              <option value="cpsi">CPSI</option>
-              <option value="all-scripts">Allscripts</option>
-              <option value="athenahealth">Athenahealth</option>
-              <option value="other">None/other</option>
-            </select>
-          </div>
-          {formState["primary-vendor"] === "other" && (
-            <div className="mb-3">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-1"
-                htmlFor="ehr"
-              >
-                Specify EHR
-              </label>
-              <textarea
-                className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="ehr"
-                name="ehr"
-                type="text"
-                placeholder=""
-              />
-            </div>
-          )}
 
           <div className="mb-3">
             <label
               className="block text-gray-700 text-sm font-bold mb-1"
               htmlFor="ehr"
             >
-              Map
+              Location
             </label>
             <PlacesAutocomplete
               value={formState.Address}
               onChange={handleChange}
-              onSelect={handleSelect}
+              onSelect={handleChange}
             >
               {({
                 getInputProps,
@@ -440,6 +457,129 @@ const Signup = ({ toggleModals, closeModal }) => {
               )}
             </PlacesAutocomplete>
           </div>
+          <div className="mb-3">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-1"
+              htmlFor="profession"
+            >
+              Profession
+            </label>
+            <select
+              className="shadow h-[38px] border rounded w-full px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="profession"
+              type="text"
+              name="Profession"
+              placeholder="Profession"
+              onChange={inputChangeHandler}
+              value={formState.Profession}
+            >
+              <option value="">Select an option</option>
+              {/* <option value="physician">Physician</option>
+              <option value="nurse-practioner">Nurse Practioner</option>
+              <option value="registered-nurse">Registered Nurse</option>
+              <option value="health-informatics-engineer">
+                Health Informatics Engineer
+              </option>
+              <option value="appointment-schedular">
+                Appointment Schedular
+              </option>
+              <option value="health-executive">Health Executive</option> */}
+              <option value="Physician">Physician</option>
+              <option value="Nurse Practioner">Nurse Practioner</option>
+              <option value="Registered Nurse-nurse">Registered Nurse</option>
+              <option value="Health Informatics Engineer">
+                Health Informatics Engineer
+              </option>
+              <option value="Appointment Schedular">
+                Appointment Schedular
+              </option>
+              <option value="Health Executive">Health Executive</option>
+            </select>
+          </div>
+          {formState.Profession === "Physician" && (
+            <div className="mb-3">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-1"
+                htmlFor="state"
+              >
+                Speciality
+              </label>
+              <select
+                className="shadow h-[38px] border rounded w-full px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="state"
+                type="text"
+                placeholder="state"
+                name="Specialty"
+                onChange={inputChangeHandler}
+                value={formState.Specialty}
+              >
+                <option value="">Choose a specialty</option>
+                {specialties.length === 0 && <option>Loading...</option>}
+                {specialties.map((el, idx) => {
+                  return (
+                    <option key={"specialty" + idx} value={el}>
+                      {el}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          )}
+          <div className="mb-3">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-1"
+              htmlFor="EHR"
+            >
+              Primary EHR Vendor
+            </label>
+            <select
+              className="shadow h-[38px] border rounded w-full px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="EHR"
+              type="text"
+              name="EHR"
+              placeholder="Primary Vendor"
+              value={formState.EHR}
+              onChange={inputChangeHandler}
+            >
+              {/* <option value="">Select an option</option> */}
+              {/* <option value="epic">Epic</option>
+              <option value="cerner">Cerner</option>
+              <option value="meditech">Meditech</option>
+              <option value="cpsi">CPSI</option>
+              <option value="all-scripts">Allscripts</option>
+              <option value="all-scripts">Medhost</option>
+              <option value="athenahealth">Athenahealth</option>
+              <option value="other">None/other</option> */}
+              <option value="">Select an option</option>
+              <option value="Epic">Epic</option>
+              <option value="Cerner">Cerner</option>
+              <option value="Meditech">Meditech</option>
+              <option value="CPSI">CPSI</option>
+              <option value="Allscripts">Allscripts</option>
+              <option value="Medhost">Medhost</option>
+              <option value="Athenahealth">Athenahealth</option>
+              <option value="other">None/other</option>
+            </select>
+          </div>
+          {formState.EHR === "other" && (
+            <div className="mb-3">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-1"
+                htmlFor="ehr"
+              >
+                Specify EHR
+              </label>
+              <input
+                className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="ehr"
+                name="EHRText"
+                type="text"
+                placeholder=""
+                value={formState.EHRText}
+                onChange={inputChangeHandler}
+              />
+            </div>
+          )}
 
           <div className="flex items-center gap-2">
             <input

@@ -6,7 +6,7 @@ const checkAuthState = () => {
 
   if (!isEmpty(userInfo)) {
     userInfo = JSON.parse(userInfo);
-    console.log(userInfo);
+
     setAuthHeader(userInfo.token);
 
     return { isAuthSet: true, ...userInfo };

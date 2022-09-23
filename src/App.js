@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -17,6 +17,7 @@ import checkAuthState from "./utils/check-auth-state";
 import { login } from "./store/slices/authSlice";
 
 function App() {
+  const { isAuthSet } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   axios.defaults.baseURL = "http://20.169.80.243/algomed";
 
@@ -24,22 +25,23 @@ function App() {
     dispatch(login(checkAuthState()));
   }, [dispatch]);
 
-  return (
-    <>
-      <ToastContainer />
-      <Router>
-        <Routes>
-          <Route path="/" element={<Nav />}>
-            <Route exact index element={<Sidebar />} />
-            <Route exact path="/about" element={<About />} />
-            <Route exact path="/products" element={<Products />} />
-            <Route exact path="/company" element={<Company />} />
-            <Route exact path="/diagnosis" element={<Diagnosis />} />
-          </Route>
-        </Routes>
-      </Router>
-    </>
-  );
+  if (isAuthSet)
+    return (
+      <>
+        <ToastContainer />
+        <Router>
+          <Routes>
+            <Route path="/" element={<Nav />}>
+              <Route exact index element={<Sidebar />} />
+              <Route exact path="/about" element={<About />} />
+              <Route exact path="/products" element={<Products />} />
+              <Route exact path="/company" element={<Company />} />
+              <Route exact path="/diagnosis" element={<Diagnosis />} />
+            </Route>
+          </Routes>
+        </Router>
+      </>
+    );
 }
 
 export default App;
