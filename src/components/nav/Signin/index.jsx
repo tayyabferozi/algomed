@@ -35,11 +35,12 @@ const Signin = ({ toggleModals, closeModal }) => {
     e.preventDefault();
     setIsLoading(true);
 
-    fetch("http://20.169.80.243/algomed/accounts/authenticate", {
+    fetch("/accounts/authenticate", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        credentials: "include",
+        "Set-Cookie": "SameSite=none",
       },
       body: JSON.stringify(formState),
     })
@@ -75,8 +76,6 @@ const Signin = ({ toggleModals, closeModal }) => {
       })
       .then((data) => {
         data.token = data.jwtToken;
-        setAuthHeader(data.token);
-        localStorage.setItem("ALGOMED_USER", JSON.stringify(data));
         dispatch(login(data));
         navigate("/diagnosis");
         closeModal();

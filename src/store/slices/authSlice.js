@@ -26,6 +26,9 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
+      console.log(action.payload);
+
+      localStorage.setItem("ALGOMED_USER", JSON.stringify(action.payload));
       axios.defaults.headers.common["Authorization"] =
         "Bearer " + action.payload.token;
 
@@ -64,60 +67,49 @@ export const { login, logout } = authSlice.actions;
 export default reducer;
 
 export const checkAuthState = () => async (dispatch, getState) => {
-  let userInfo = localStorage.getItem("ALGOMED_USER");
+  console.log("CHECKING STATE");
 
-  if (!isEmpty(userInfo)) {
-    try {
-      const res = await fetch(
-        "http://20.169.80.243/algomed/accounts/refresh-token",
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {},
-        }
-      );
+  try {
+    const res = await fetch("/accounts/refresh-token", {
+      method: "POST",
+      credentials: "include",
+      headers: {},
+    });
 
-      const data = await res.json();
-      if (res.ok) {
-        dispatch(login(data));
-      } else {
-        console.log(data.message);
-        dispatch(logout());
-      }
-    } catch (err) {
-      console.log(err);
-      userInfo = JSON.parse(userInfo);
-      dispatch(logout());
+    const data = await res.json();
+    if (res.ok) {
+      dispatch(login({ ...data, token: data.jwtToken, isAuthSet: true }));
+    } else {
+      console.log(data.message);
+      dispatch(login({ isAuthSet: true }));
     }
-
-    // setAuthHeader(userInfo.token);
-
-    // return { isAuthSet: true, ...userInfo };
-  } else {
-    dispatch(
-      login({
-        isAuthSet: true,
-      })
-    );
+  } catch (err) {
+    console.log(err);
+    dispatch(logout());
   }
+
+  // setAuthHeader(userInfo.token);
+
+  // return { isAuthSet: true, ...userInfo };
 };
 
 function startRefreshTimer() {
-  setTimeout(async function () {
+  setInterval(async function () {
     try {
-      const { data } = await fetch(
-        "http://20.169.80.243/algomed/accounts/refresh-token",
-        {
-          method: "POST",
-          credentials: "same-origin",
-          headers: {},
-        }
-      );
+      const res = await fetch("/accounts/refresh-token", {
+        method: "POST",
+        credentials: "include",
+      });
 
-      console.log(data);
+      const data = await res.json();
+      if (res.ok) {
+        data.token = data.jwtToken;
+        axios.defaults.headers.common["Authorization"] = "Bearer " + data.token;
+        localStorage.setItem("ALGOMED_USER", data);
+      }
     } catch (err) {
       console.log(err);
     }
-    // }, 1000 * 60 * 15);
-  }, 1000);
+  }, 1000 * 60 * 60 * 15);
+  // }, 2000);
 }
