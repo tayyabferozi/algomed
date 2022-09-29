@@ -1,37 +1,16 @@
-import axios from "axios";
-import { useSelector } from "react-redux";
-import { useState } from "react";
+import clsx from "clsx";
 
-const handleMessageChange = (event) => {};
-
-export const SuggestingTextbox = ({ dataTarget, title }) => {
-  const { id } = useSelector((state) => state.auth);
-
-  const [suggestions, setSuggestions] = useState(false);
-
-  const inputChangeHandler = (e) => {
-    const { name, value } = e.target;
-
-    console.log({ id, Anamnesis: value });
-
-    axios.get("/diagnosis/getworkup", { id, Anamnesis: value }).then((res) => {
-      console.log(res);
-    });
-
-    setSuggestions((prevState) => {
-      if (value.trim().length > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-  };
-
+export const SuggestingTextbox = ({
+  inputChangeHandler,
+  data: suggestions,
+  dataTarget,
+  addFinding,
+  title,
+}) => {
   return (
     <div className="mt-[20px] relative" data-target={dataTarget}>
       <h6 className="font-bold mb-[4px]">{title}</h6>
       <textarea
-        onChangeCapture={inputChangeHandler}
         className="
                 form-control
                 block
@@ -54,55 +33,84 @@ export const SuggestingTextbox = ({ dataTarget, title }) => {
         rows="3"
         placeholder="Type HPI in this box..."
         name="HPI"
-        onChange={handleMessageChange}
+        onChange={inputChangeHandler}
       ></textarea>
 
-      {suggestions && (
+      {suggestions?.length > 0 && (
         <div className="absolute left-0 right-0 bg-white z-10">
           <h5 className="opacity-40 font-bold text-[14px]">
             SUGGESTED FINDERS
           </h5>
 
           <div className="suggestions-main py-2">
-            <div className="flex justify-between items-center m-2 gap-[6px]">
-              <div className="flex gap-[8px]">
-                <div className="flex gap-[2px]">
-                  <div className="bg-indigo-600 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-indigo-600 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
-                </div>
-                <div NameName="opacity-70">Other constipation</div>
-              </div>
+            {suggestions.map((el, idx) => {
+              const { code, relevance, description, infoPageLink } = el;
 
-              <button className="bg-indigo-600 rounded-md px-4 py-1">
-                <div className="text flex items-center gap-3">
-                  <div className="text-white text-lg">+</div>
-                  <span className="ms-3 text-white text-base">Add</span>
+              return (
+                <div
+                  key={idx + code + relevance}
+                  className="flex justify-between items-center m-2 gap-[6px]"
+                >
+                  <div className="flex gap-[8px]">
+                    <div className="flex gap-[2px]">
+                      <div
+                        className={clsx(
+                          "rounded-md w-[7px] h-[22px]",
+                          relevance >= 1 ? "bg-indigo-600" : "bg-zinc-400"
+                        )}
+                      ></div>
+                      <div
+                        className={clsx(
+                          "rounded-md w-[7px] h-[22px]",
+                          relevance >= 2 ? "bg-indigo-600" : "bg-zinc-400"
+                        )}
+                      ></div>
+                      <div
+                        className={clsx(
+                          "rounded-md w-[7px] h-[22px]",
+                          relevance >= 3 ? "bg-indigo-600" : "bg-zinc-400"
+                        )}
+                      ></div>
+                      <div
+                        className={clsx(
+                          "rounded-md w-[7px] h-[22px]",
+                          relevance >= 4 ? "bg-indigo-600" : "bg-zinc-400"
+                        )}
+                      ></div>
+                      <div
+                        className={clsx(
+                          "rounded-md w-[7px] h-[22px]",
+                          relevance >= 5 ? "bg-indigo-600" : "bg-zinc-400"
+                        )}
+                      ></div>
+                      <div
+                        className={clsx(
+                          "rounded-md w-[7px] h-[22px]",
+                          relevance >= 6 ? "bg-indigo-600" : "bg-zinc-400"
+                        )}
+                      ></div>
+                    </div>
+                    <div NameName="opacity-70">{description}</div>
+                  </div>
+                  <div className="flex gap-[4px]">
+                    <a
+                      href={infoPageLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="cursor-pointer bg-purple-700 hover:bg-purple-800 text-white py-1 px-3 rounded focus:outline-none focus:shadow-outline disabled:opacity-60 disabled:pointer-events-none"
+                    >
+                      ?
+                    </a>
+                    <button
+                      onClick={() => addFinding(el)}
+                      className="bg-indigo-600 hover:bg-indigo-700 text-white py-1 px-3 rounded focus:outline-none focus:shadow-outline disabled:opacity-60 disabled:pointer-events-none"
+                    >
+                      + Add
+                    </button>
+                  </div>
                 </div>
-              </button>
-            </div>
-
-            <div className="flex justify-between items-center m-2 gap-[6px]">
-              <div className="flex gap-[8px]">
-                <div className="flex gap-[2px]">
-                  <div className="bg-indigo-600 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
-                  <div className="bg-zinc-400 rounded-md w-[8px] h-[22px]"></div>
-                </div>
-                <div NameName="opacity-70">Abnormal weight loss</div>
-              </div>
-
-              <button className="bg-indigo-600 rounded-md px-4 py-1">
-                <div className="text flex items-center gap-3">
-                  <div className="text-white text-lg">+</div>
-                  <span className="ms-3 text-white text-base">Add</span>
-                </div>
-              </button>
-            </div>
+              );
+            })}
           </div>
         </div>
       )}

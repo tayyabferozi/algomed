@@ -42,7 +42,9 @@ export const Nav = () => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   const dispatch = useDispatch();
-  const { token, role } = useSelector((state) => state.auth);
+  const { token, role, firstName, lastName } = useSelector(
+    (state) => state.auth
+  );
   const navigate = useNavigate();
 
   const closeModals = () => {
@@ -141,7 +143,7 @@ export const Nav = () => {
                           setShowDropdown((prevState) => !prevState);
                         }}
                       >
-                        John Doe
+                        {firstName + " " + lastName}
                         <svg
                           className="-mr-1 ml-2 h-5 w-5"
                           xmlns="http://www.w3.org/2000/svg"
@@ -152,7 +154,7 @@ export const Nav = () => {
                           <path
                             fillRule="evenodd"
                             d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                            clip-rule="evenodd"
+                            clipRule="evenodd"
                           />
                         </svg>
                       </button>
@@ -164,13 +166,13 @@ export const Nav = () => {
                         role="menu"
                         aria-orientation="vertical"
                         aria-labelledby="menu-button"
-                        tabindex="-1"
+                        tabIndex="-1"
                       >
                         <div className="py-1" role="none">
                           <button
                             className="text-gray-700 block w-full px-4 py-2 text-left text-sm"
                             role="menuitem"
-                            tabindex="-1"
+                            tabIndex="-1"
                             onClick={() => {
                               setShowDropdown(false);
                               setShowUpdateProfileModal(true);
@@ -183,7 +185,7 @@ export const Nav = () => {
                             <button
                               className="text-gray-700 block w-full px-4 py-2 text-left text-sm"
                               role="menuitem"
-                              tabindex="-1"
+                              tabIndex="-1"
                               onClick={() => {
                                 setShowDropdown(false);
                                 setShowManageUsersModal(true);
@@ -196,7 +198,7 @@ export const Nav = () => {
                           <button
                             className="text-gray-700 block w-full px-4 py-2 text-left text-sm"
                             role="menuitem"
-                            tabindex="-1"
+                            tabIndex="-1"
                             onClick={() => {
                               logoutHandler();
                               setShowDropdown(false);
@@ -325,7 +327,7 @@ export const Nav = () => {
                             setShowDropdown((prevState) => !prevState);
                           }}
                         >
-                          John Doe
+                          {firstName + " " + lastName}
                           <svg
                             className="-mr-1 ml-2 h-5 w-5"
                             xmlns="http://www.w3.org/2000/svg"
@@ -336,7 +338,7 @@ export const Nav = () => {
                             <path
                               fillRule="evenodd"
                               d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                              clip-rule="evenodd"
+                              clipRule="evenodd"
                             />
                           </svg>
                         </button>
@@ -348,13 +350,13 @@ export const Nav = () => {
                           role="menu"
                           aria-orientation="vertical"
                           aria-labelledby="menu-button"
-                          tabindex="-1"
+                          tabIndex="-1"
                         >
                           <div className="py-1" role="none">
                             <button
                               className="text-gray-700 block w-full px-4 py-2 text-left text-sm"
                               role="menuitem"
-                              tabindex="-1"
+                              tabIndex="-1"
                               onClick={() => {
                                 setShowDropdown(false);
                                 setShowUpdateProfileModal(true);
@@ -366,7 +368,7 @@ export const Nav = () => {
                             <button
                               className="text-gray-700 block w-full px-4 py-2 text-left text-sm"
                               role="menuitem"
-                              tabindex="-1"
+                              tabIndex="-1"
                               onClick={() => {
                                 setShowDropdown(false);
                                 setShowManageUsersModal(true);
@@ -378,7 +380,7 @@ export const Nav = () => {
                             <button
                               className="text-gray-700 block w-full px-4 py-2 text-left text-sm"
                               role="menuitem"
-                              tabindex="-1"
+                              tabIndex="-1"
                               onClick={() => {
                                 logoutHandler();
                                 setShowDropdown(false);

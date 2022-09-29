@@ -35,43 +35,93 @@ const Signin = ({ toggleModals, closeModal }) => {
     e.preventDefault();
     setIsLoading(true);
 
-    axios
-      .post("/accounts/authenticate", formState)
-      .then((res) => {
-        res.data.token = res.data.jwtToken;
-        setAuthHeader(res.data.token);
-        localStorage.setItem("ALGOMED_USER", JSON.stringify(res.data));
+    fetch("http://20.169.80.243/algomed/accounts/authenticate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        credentials: "include",
+      },
+      body: JSON.stringify(formState),
+    })
+      .then(async (res) => {
+        if (res.ok) {
+          setIsLoading(false);
 
-        dispatch(login(res.data));
+          return res.json();
+        } else {
+          const data = await res.json();
+
+          if (data) {
+            if (!isEmpty(data?.errors)) {
+              for (const key in data?.errors) {
+                if (Object.hasOwnProperty.call(data?.errors, key)) {
+                  let element = data?.errors[key];
+
+                  if (typeof element === "object") {
+                    element = element[0];
+                  }
+
+                  toast.error(element);
+                }
+              }
+            } else if (!isEmpty(data?.message)) {
+              toast.error(data?.message);
+            } else {
+              toast.error("Uh Oh! Something went wrong!");
+            }
+          }
+        }
+        setIsLoading(false);
+      })
+      .then((data) => {
+        data.token = data.jwtToken;
+        setAuthHeader(data.token);
+        localStorage.setItem("ALGOMED_USER", JSON.stringify(data));
+        dispatch(login(data));
         navigate("/diagnosis");
         closeModal();
       })
       .catch((err) => {
         console.log(err);
-
-        if (err.response.data) {
-          if (!isEmpty(err.response.data?.errors)) {
-            for (const key in err.response.data?.errors) {
-              if (Object.hasOwnProperty.call(err.response.data?.errors, key)) {
-                let element = err.response.data?.errors[key];
-
-                if (typeof element === "object") {
-                  element = element[0];
-                }
-
-                toast.error(element);
-              }
-            }
-          } else if (!isEmpty(err.response.data?.message)) {
-            toast.error(err.response.data?.message);
-          } else {
-            toast.error("Uh Oh! Something went wrong!");
-          }
-        }
-      })
-      .finally(() => {
-        setIsLoading(false);
       });
+
+    // axios
+    //   .post("/accounts/authenticate", formState, { withCredentials: true })
+    //   .then((res) => {
+    //     res.data.token = res.data.jwtToken;
+    //     setAuthHeader(res.data.token);
+    //     localStorage.setItem("ALGOMED_USER", JSON.stringify(res.data));
+
+    //     dispatch(login(res.data));
+    //     navigate("/diagnosis");
+    //     closeModal();
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+
+    //     if (err.response.data) {
+    //       if (!isEmpty(err.response.data?.errors)) {
+    //         for (const key in err.response.data?.errors) {
+    //           if (Object.hasOwnProperty.call(err.response.data?.errors, key)) {
+    //             let element = err.response.data?.errors[key];
+
+    //             if (typeof element === "object") {
+    //               element = element[0];
+    //             }
+
+    //             toast.error(element);
+    //           }
+    //         }
+    //       } else if (!isEmpty(err.response.data?.message)) {
+    //         toast.error(err.response.data?.message);
+    //       } else {
+    //         toast.error("Uh Oh! Something went wrong!");
+    //       }
+    //     }
+    //   })
+    //   .finally(() => {
+    //     setIsLoading(false);
+    //   });
   };
 
   return (

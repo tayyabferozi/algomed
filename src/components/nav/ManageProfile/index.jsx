@@ -1,15 +1,61 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import axios from "axios";
+import { useSelector } from "react-redux";
+
 import Confirm from "../../Confirm";
+import RegisterForm from "../RegisterForm";
+import isEmpty from "../../../utils/is-empty";
+import { useEffect } from "react";
+
+// const initialFormState = {
+//   title: "Mr",
+//   firstName: "John",
+//   lastName: "Doe",
+//   email: "ferozitayyab@gmail.com",
+//   password: "123456",
+//   confirmPassword: "123456",
+//   acceptTerms: true,
+//   Profession: "Physician",
+//   Specialty: "Pediatrics",
+//   Organization: "Sutter Health",
+//   Address: "30210 bev hills",
+//   EHR: "Epic",
+// };
+const initialFormState = {
+  title: "Mr",
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  Profession: "",
+  Specialty: "",
+  EHR: "",
+  EHRText: "",
+  country: "",
+  state: "",
+  Address: "",
+  Organization: "",
+};
 
 const ManageProfile = ({ toggleModals, closeModal }) => {
-  const [formState, setFormState] = useState({
-    role: "physician",
-  });
+  const { auth } = useSelector((state) => state);
+
+  const [formState, setFormState] = useState(initialFormState);
+  const [isLoading, setIsLoading] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const inputChangeHandler = (e) => {
-    const { name, value } = e.target;
+    let { type, name, value } = e.target;
+
+    if (type === "checkbox") {
+      if (value === "on") {
+        value = true;
+      } else {
+        value = false;
+      }
+    }
 
     setFormState((prevState) => {
       return {
@@ -31,12 +77,68 @@ const ManageProfile = ({ toggleModals, closeModal }) => {
   const formSubmitHandler = (e) => {
     e.preventDefault();
 
-    closeModal();
+    setIsLoading(true);
+    // setFormState((prevState) => ({ ...prevState, acceptTerms: true }));
 
-    toast.success(
-      "Algomed is in closed Beta. Your request has been received. We typically respond within 24 hours. Please check your email inbox and spam folder for an invitation to login."
-    );
+    let EHR = "";
+
+    if (formState.EHR === "other") {
+      EHR = formState.EHRText;
+    } else {
+      EHR = formState.EHR;
+    }
+
+    axios
+      .put(`/accounts/${auth.id}`, { ...formState, EHR })
+      .then((res) => {
+        closeModal();
+        toast.success("Info updated successfully, log in again to see changes");
+      })
+      .catch((err) => {
+        console.log(err);
+        if (!isEmpty(err.response.data?.errors)) {
+          for (const key in err.response.data?.errors) {
+            if (Object.hasOwnProperty.call(err.response.data?.errors, key)) {
+              let element = err.response.data?.errors[key];
+
+              if (typeof element === "object") {
+                element = element[0];
+              }
+
+              toast.error(element);
+            }
+          }
+        } else if (!isEmpty(err.response.data?.message)) {
+          toast.error(err.response.data?.message);
+        } else {
+          toast.error("Uh Oh! Something went wrong!");
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
+
+  useEffect(() => {
+    const accountInfo = { ...auth };
+    delete accountInfo.token;
+    delete accountInfo.jwtToken;
+    delete accountInfo.isVerified;
+    delete accountInfo.created;
+    delete accountInfo.isAuthSet;
+    delete accountInfo.id;
+    accountInfo.Address = accountInfo.address;
+    delete accountInfo.address;
+    accountInfo.Profession = accountInfo.profession;
+    delete accountInfo.profession;
+    accountInfo.Specialty = accountInfo.specialty;
+    delete accountInfo.specialty;
+    accountInfo.EHR = accountInfo.ehr;
+    delete accountInfo.ehr;
+
+    setFormState(accountInfo);
+    console.log(accountInfo);
+  }, [auth]);
 
   return (
     <>
@@ -51,252 +153,83 @@ const ManageProfile = ({ toggleModals, closeModal }) => {
           onSubmit={formSubmitHandler}
           className="bg-white shadow-md rounded-b px-8 pt-6 pb-8"
         >
-          <div className="mb-3 grid grid-cols-3 gap-3">
-            <div>
-              <label
-                className="block text-gray-700 text-sm font-bold mb-1"
-                htmlFor="title"
-              >
-                Title
-              </label>
-              <select
-                className="shadow h-[38px] border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="title"
-                type="text"
-                placeholder="title"
-              >
-                <option value="dr">Dr.</option>
-                <option value="mr">Mr.</option>
-                <option value="mrs">Mrs.</option>
-                <option value="miss">Miss</option>
-              </select>
-            </div>
-            <div>
-              <label
-                className="block text-gray-700 text-sm font-bold mb-1"
-                htmlFor="first-name"
-              >
-                First Name
-              </label>
-              <input
-                className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="first-name"
-                type="text"
-                placeholder=""
-              />
-            </div>
-            <div>
-              <label
-                className="block text-gray-700 text-sm font-bold mb-1"
-                htmlFor="last-name"
-              >
-                Last Name
-              </label>
-              <input
-                className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="last-name"
-                type="text"
-                placeholder=""
-              />
-            </div>
-          </div>
-          <div className="mb-3">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-1"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <input
-              className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="email"
-              type="text"
-              placeholder=""
-            />
-          </div>
-          <div className="mb-3">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-1"
-              htmlFor="country"
-            >
-              Country
-            </label>
-            <select
-              className="shadow h-[38px] border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="country"
-              type="text"
-              placeholder="country"
-            >
-              <option value="options-1">Option 1</option>
-              <option value="options-2">Option 2</option>
-            </select>
-          </div>
-          <div className="mb-3">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-1"
-              htmlFor="state"
-            >
-              State
-            </label>
-            <select
-              className="shadow h-[38px] border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="state"
-              type="text"
-              placeholder="state"
-            >
-              <option value="options-1">Option 1</option>
-              <option value="options-2">Option 2</option>
-            </select>
-          </div>
-          <div className="mb-3">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-1"
-              htmlFor="role"
-            >
-              Role
-            </label>
-            <select
-              className="shadow h-[38px] border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="role"
-              type="text"
-              name="profession"
-              placeholder="Role"
-              onChange={inputChangeHandler}
-              value={formState.profession}
-            >
-              <option value="physician">Physician</option>
-              <option value="nurse-practioner">Nurse Practioner</option>
-              <option value="registered-nurse">Registered Nurse</option>
-              <option value="health-informatics-engineer">
-                Health Informatics Engineer
-              </option>
-              <option value="appointment-schedular">
-                Appointment Schedular
-              </option>
-              <option value="health-executive">Health Executive</option>
-            </select>
-          </div>
-          {formState.profession === "physician" && (
-            <div className="mb-3">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-1"
-                htmlFor="state"
-              >
-                Speciality
-              </label>
-              <select
-                className="shadow h-[38px] border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="state"
-                type="text"
-                placeholder="state"
-              >
-                <option value="options-1">Option 1</option>
-                <option value="options-2">Option 2</option>
-              </select>
-            </div>
-          )}
-          <div className="mb-3">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-1"
-              htmlFor="primary-vendor"
-            >
-              Primary EHR Vendor
-            </label>
-            <select
-              className="shadow h-[38px] border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="primary-vendor"
-              type="text"
-              name="primary-vendor"
-              placeholder="Primary Vendor"
-              value={formState["primary-vendor"]}
-              onChange={inputChangeHandler}
-            >
-              <option value="epic">Epic</option>
-              <option value="cerner">Cerner</option>
-              <option value="meditech">Meditech</option>
-              <option value="cpsi">CPSI</option>
-              <option value="all-scripts">Allscripts</option>
-              <option value="athenahealth">Athenahealth</option>
-              <option value="other">None/other</option>
-            </select>
-          </div>
-          {formState["primary-vendor"] === "other" && (
-            <div className="mb-3">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-1"
-                htmlFor="ehr"
-              >
-                Specify EHR
-              </label>
-              <textarea
-                className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="ehr"
-                name="ehr"
-                type="text"
-                placeholder=""
-              />
-            </div>
-          )}
+          <RegisterForm
+            formState={formState}
+            inputChangeHandler={inputChangeHandler}
+            edit
+          />
 
-          <div className="mt-7 mb-5">
-            <h2 className="font-bold text-xl">Change Password</h2>
-            <p className="mt-1">Leave blank to keep the same</p>
-          </div>
+          <>
+            <div className="mt-7 mb-5">
+              <h2 className="font-bold text-xl">Change Password</h2>
+              <p className="mt-1">Leave blank to keep the same</p>
+            </div>
 
-          <div className="mb-3 grid grid-cols-2 gap-3">
-            <div>
-              <label
-                className="block text-gray-700 text-sm font-bold mb-1"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <input
-                className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="password"
-                type="password"
-                placeholder="******************"
-              />
+            <div className="mb-3 grid grid-cols-2 gap-3">
+              <div>
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-1"
+                  htmlFor="password"
+                >
+                  Password
+                </label>
+                <input
+                  className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="password"
+                  type="password"
+                  placeholder="******************"
+                  name="password"
+                  onChange={inputChangeHandler}
+                  value={formState.password}
+                />
+              </div>
+              <div>
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-1"
+                  htmlFor="confirm-password"
+                >
+                  Confirm Password
+                </label>
+                <input
+                  className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="confirm-password"
+                  type="confirm-password"
+                  placeholder="******************"
+                  name="confirmPassword"
+                  onChange={inputChangeHandler}
+                  value={formState.confirmPassword}
+                />
+              </div>
             </div>
-            <div>
-              <label
-                className="block text-gray-700 text-sm font-bold mb-1"
-                htmlFor="confirm-password"
+            <div className="flex items-center gap-2 mt-6">
+              <button
+                disabled={isLoading}
+                onClick={formSubmitHandler}
+                className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-50 disabled:pointer-events-none"
               >
-                Confirm Password
-              </label>
-              <input
-                className="shadow  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="confirm-password"
-                type="confirm-password"
-                placeholder="******************"
-              />
+                Update
+              </button>
+              {/* <button
+                type="button"
+                className="bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                onClick={() => {
+                  setShowConfirmModal(true);
+                }}
+              >
+                Delete
+              </button> */}
+              <a
+                className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800 pl-3"
+                href="#0"
+                onClick={(e) => {
+                  closeModal();
+                  e.preventDefault();
+                }}
+              >
+                Cancel
+              </a>
             </div>
-          </div>
-          <div className="flex items-center gap-2 mt-6">
-            <button
-              className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              onClick={closeModal}
-            >
-              Update
-            </button>
-            <button
-              type="button"
-              className="bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              onClick={() => {
-                setShowConfirmModal(true);
-              }}
-            >
-              Delete
-            </button>
-            <a
-              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800 pl-3"
-              href="#0"
-              onClick={closeModal}
-            >
-              Cancel
-            </a>
-          </div>
+          </>
         </form>
       </div>
     </>

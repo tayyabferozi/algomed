@@ -1,6 +1,12 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
+import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 
 import "./styles/styles.scss";
@@ -10,19 +16,17 @@ import { Sidebar } from "./components/Sidebar/Sidebar";
 import About from "./pages/About";
 import Products from "./pages/Products";
 import Company from "./pages/Company";
-import Diagnosis from "./pages/Diagnosis";
-import axios from "axios";
 import { useEffect } from "react";
-import checkAuthState from "./utils/check-auth-state";
-import { login } from "./store/slices/authSlice";
+import { checkAuthState } from "./store/slices/authSlice";
 
 function App() {
-  const { isAuthSet } = useSelector((state) => state.auth);
+  const { isAuthSet, token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   axios.defaults.baseURL = "http://20.169.80.243/algomed";
+  axios.defaults.withCredentials = true;
 
   useEffect(() => {
-    dispatch(login(checkAuthState()));
+    dispatch(checkAuthState());
   }, [dispatch]);
 
   if (isAuthSet)
@@ -32,11 +36,15 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Nav />}>
-              <Route exact index element={<Sidebar />} />
-              <Route exact path="/about" element={<About />} />
+              <Route exact index element={<About />} />
               <Route exact path="/products" element={<Products />} />
               <Route exact path="/company" element={<Company />} />
-              <Route exact path="/diagnosis" element={<Diagnosis />} />
+              {token && (
+                <>
+                  <Route exact path="/diagnosis" element={<Sidebar />} />
+                </>
+              )}
+              <Route path="*" element={<Navigate to="/" />} />
             </Route>
           </Routes>
         </Router>
