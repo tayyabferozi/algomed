@@ -122,6 +122,8 @@ const AddUser = ({ closeModal }) => {
                   Appointment Schedular
                 </option>
                 <option value="health-executive">Health Executive</option>
+                <option value="Medical Student">Medical Student</option>
+                <option value="Nursing Student">Nursing Student</option>
               </select>
             </div>
           </div>

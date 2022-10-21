@@ -376,6 +376,8 @@ const RegisterForm = ({ edit, inputChangeHandler, formState }) => {
           </option>
           <option value="Appointment Schedular">Appointment Schedular</option>
           <option value="Health Executive">Health Executive</option>
+          <option value="Medical Student">Medical Student</option>
+          <option value="Nursing Student">Nursing Student</option>
         </select>
       </div>
       {formState.Profession === "Physician" && (
