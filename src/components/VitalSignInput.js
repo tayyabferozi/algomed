@@ -1,6 +1,6 @@
 import React from "react";
 
-const VitalSignInput = ({ title, double }) => {
+const VitalSignInput = ({ title, double, number }) => {
   return (
     <div className="mt-[4px]">
       <div className="label font-regular opacity-60 text-[14px]">
@@ -8,12 +8,22 @@ const VitalSignInput = ({ title, double }) => {
       </div>
 
       <div className="flex items-center gap-3">
-        <input className="w-[100%] mt-1 rounded-md px-2 py-2" />
+        <input
+          type="number"
+          step={0.1}
+          max={99.99}
+          className="w-[100%] mt-1 rounded-md px-2 py-2"
+        />
 
         {double && (
           <>
             <div className="">/</div>
-            <input className="w-[100%] mt-1 rounded-md px-2 py-2" />
+            <input
+              type="number"
+              step={0.1}
+              max={99.99}
+              className="w-[100%] mt-1 rounded-md px-2 py-2"
+            />
           </>
         )}
       </div>

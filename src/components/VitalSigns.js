@@ -8,12 +8,12 @@ const VitalSigns = ({ dataTarget, title }) => {
 
       <div className="inputs px-2 py-3 mx-2 border-2 border-zinc-10 rounded-lg">
         <div className="grid grid-rows-2 grid-flow-col gap-4">
-          <VitalSignInput title="Pulse" />
-          <VitalSignInput title="Temperature (C)" />
-          <VitalSignInput title="Respiration" />
-          <VitalSignInput title="Weight (KG)" />
-          <VitalSignInput title="Blood Pressure" double />
-          <VitalSignInput title="Height (CM)" />
+          <VitalSignInput title="Pulse" number />
+          <VitalSignInput title="Temperature (C)" number />
+          <VitalSignInput title="Respiration" number />
+          <VitalSignInput title="Weight (KG)" number />
+          <VitalSignInput title="Blood Pressure" double number />
+          <VitalSignInput title="Height (CM)" number />
         </div>
       </div>
     </div>

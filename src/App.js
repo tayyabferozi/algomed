@@ -50,6 +50,12 @@ function App() {
         </Router>
       </>
     );
+  else
+    return (
+      <div className="full-page-loader">
+        <div className="loader" />
+      </div>
+    );
 }
 
 export default App;

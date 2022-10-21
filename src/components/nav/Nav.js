@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 import Register from "./Signup";
 import Signin from "./Signin";
-import { logout } from "../../store/slices/authSlice";
+import { revokeTokenAndLogout } from "../../store/slices/authSlice";
 import ManageProfile from "./ManageProfile";
 import ManageUsers from "./ManageUsers";
 
@@ -66,7 +66,7 @@ export const Nav = () => {
   };
 
   const logoutHandler = () => {
-    dispatch(logout());
+    dispatch(revokeTokenAndLogout());
     navigate("/");
   };
 

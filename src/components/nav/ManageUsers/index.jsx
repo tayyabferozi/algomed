@@ -109,9 +109,6 @@ const ManageUsers = ({ closeModal }) => {
                       Email
                     </th>
                     <th scope="col" className="py-3 px-6">
-                      Role
-                    </th>
-                    <th scope="col" className="py-3 px-6">
                       Coder
                     </th>
                     <th scope="col" className="py-3 px-6">
@@ -146,7 +143,6 @@ const ManageUsers = ({ closeModal }) => {
                           {firstName + " " + lastName}
                         </th>
                         <td className="py-4 px-6">{email}</td>
-                        <td className="py-4 px-6">{role}</td>
                         <td className="py-4 px-6">
                           <input
                             id="default-checkbox"

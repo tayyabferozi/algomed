@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import isEmpty from "../../utils/is-empty";
-import setAuthHeader from "../../utils/set-auth-header";
 
 const initialState = {
   token: null,
@@ -26,8 +24,6 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      console.log(action.payload);
-
       localStorage.setItem("ALGOMED_USER", JSON.stringify(action.payload));
       axios.defaults.headers.common["Authorization"] =
         "Bearer " + action.payload.token;
@@ -67,8 +63,6 @@ export const { login, logout } = authSlice.actions;
 export default reducer;
 
 export const checkAuthState = () => async (dispatch, getState) => {
-  console.log("CHECKING STATE");
-
   try {
     const res = await fetch("/accounts/refresh-token", {
       method: "POST",
@@ -111,5 +105,26 @@ function startRefreshTimer() {
       console.log(err);
     }
   }, 1000 * 60 * 60 * 15);
-  // }, 2000);
 }
+
+export const revokeTokenAndLogout = () => async (dispatch, getState) => {
+  const { auth } = getState();
+  try {
+    // const res = await fetch("/accounts/revoke-token", {
+    //   method: "POST",
+    //   credentials: "include",
+    //   body: JSON.stringify({
+    //     token: auth.token,
+    //   }),
+    // });
+
+    // const data = await res.json();
+
+    // if (res.ok) {
+    //   console.log(res);
+    // }
+    dispatch(logout());
+  } catch (err) {
+    console.log(err);
+  }
+};

@@ -6,7 +6,7 @@ import { Editor } from "../editor/Editor";
 const menuItems = [
   // { title: "Dashboard", src: "./Chart_fill.png" },
   { target: "chief-complaint", title: "Chief Compaint", src: "./Chat.png" },
-  { target: "vitals", title: "Vitals", src: "./User.png", gap: true },
+  { target: "vitals", title: "Vitals", src: "./User.png" },
   { target: "physical", title: "Physical ", src: "./Calendar.png" },
   { target: "ros", title: "ROS", src: "./Search.png" },
   { target: "diagnosis", title: "Diagnosis", src: "./Chart.png" },
