@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
+import { CookiesProvider } from "react-cookie";
 
 import "./styles/styles.scss";
 
@@ -32,22 +33,24 @@ function App() {
   if (isAuthSet)
     return (
       <>
-        <ToastContainer />
-        <Router>
-          <Routes>
-            <Route path="/" element={<Nav />}>
-              <Route exact index element={<About />} />
-              <Route exact path="/products" element={<Products />} />
-              <Route exact path="/company" element={<Company />} />
-              {token && (
-                <>
-                  <Route exact path="/diagnosis" element={<Sidebar />} />
-                </>
-              )}
-              <Route path="*" element={<Navigate to="/" />} />
-            </Route>
-          </Routes>
-        </Router>
+        <CookiesProvider>
+          <ToastContainer />
+          <Router>
+            <Routes>
+              <Route path="/" element={<Nav />}>
+                <Route exact index element={<About />} />
+                <Route exact path="/products" element={<Products />} />
+                <Route exact path="/company" element={<Company />} />
+                {token && (
+                  <>
+                    <Route exact path="/diagnosis" element={<Sidebar />} />
+                  </>
+                )}
+                <Route path="*" element={<Navigate to="/" />} />
+              </Route>
+            </Routes>
+          </Router>
+        </CookiesProvider>
       </>
     );
   else

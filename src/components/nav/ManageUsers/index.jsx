@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Confirm from "../../Confirm";
+import { useSelector } from "react-redux";
 
+import Confirm from "../../Confirm";
 import AddUser from "./AddUser";
 
 const ManageUsers = ({ closeModal }) => {
@@ -13,6 +14,43 @@ const ManageUsers = ({ closeModal }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [usersState, setUsersState] = useState([]);
   const [userToDelete, setUserToDelete] = useState(null);
+  const { id } = useSelector((state) => state.auth);
+
+  const coderChangeHandler = (e, userId) => {
+    if (e.target.checked) {
+    }
+
+    axios
+      .put("/accounts/SetCoder", {
+        UserID: id,
+        UserIDToSetCoder: userId,
+        IsCoder: e.target.checked,
+      })
+      .then(() => {
+        loadUser();
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Uh Oh! Something went wrong");
+      });
+  };
+
+  const adminChangeHandler = (e, userId) => {
+    if (e.target.checked) {
+      axios
+        .put("/accounts/MakeAdmin", {
+          UserID: id,
+          UserIDToMakeAdmin: userId,
+        })
+        .then(() => {
+          loadUser();
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Uh Oh! Something went wrong");
+        });
+    }
+  };
 
   const loadUser = () => {
     setIsLoading(true);
@@ -121,15 +159,7 @@ const ManageUsers = ({ closeModal }) => {
                 </thead>
                 <tbody>
                   {usersState.map((el, idx) => {
-                    const {
-                      id,
-                      firstName,
-                      lastName,
-                      email,
-                      role,
-                      coder,
-                      admin,
-                    } = el;
+                    const { id, firstName, lastName, email, coder, role } = el;
 
                     return (
                       <tr
@@ -148,6 +178,7 @@ const ManageUsers = ({ closeModal }) => {
                             id="default-checkbox"
                             type="checkbox"
                             value=""
+                            onChange={(e) => coderChangeHandler(e, id)}
                             className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                             defaultChecked={coder}
                           />
@@ -157,8 +188,9 @@ const ManageUsers = ({ closeModal }) => {
                             id="default-checkbox"
                             type="checkbox"
                             value=""
+                            onChange={(e) => adminChangeHandler(e, id)}
                             className="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            defaultChecked={admin}
+                            defaultChecked={role === "Admin"}
                           />
                         </td>
                         <td className="py-4 px-6">

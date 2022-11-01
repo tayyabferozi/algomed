@@ -5,6 +5,7 @@ import { Link, Outlet } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { Transition } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 import Register from "./Signup";
 import Signin from "./Signin";
@@ -33,6 +34,8 @@ const navItems = [
 ];
 
 export const Nav = () => {
+  const [cookies, , removeCookie] = useCookies(["refreshToken"]);
+
   const [isOpen, setIsOpen] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showUpdateProfileModal, setShowUpdateProfileModal] = useState(false);
@@ -65,9 +68,16 @@ export const Nav = () => {
     }
   };
 
-  const logoutHandler = () => {
-    dispatch(revokeTokenAndLogout());
-    navigate("/");
+  const logoutHandler = (token) => {
+    dispatch(
+      revokeTokenAndLogout({
+        token,
+        cb: () => {
+          navigate("/");
+          removeCookie();
+        },
+      })
+    );
   };
 
   return (
@@ -200,7 +210,7 @@ export const Nav = () => {
                             role="menuitem"
                             tabIndex="-1"
                             onClick={() => {
-                              logoutHandler();
+                              logoutHandler(cookies.refreshToken);
                               setShowDropdown(false);
                             }}
                           >
@@ -382,7 +392,7 @@ export const Nav = () => {
                               role="menuitem"
                               tabIndex="-1"
                               onClick={() => {
-                                logoutHandler();
+                                logoutHandler(cookies.refreshToken);
                                 setShowDropdown(false);
                               }}
                             >
