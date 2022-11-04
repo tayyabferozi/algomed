@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import getCookie from "../../utils/get-cookie";
 import setAuthHeader from "../../utils/set-auth-header";
+
+let timer;
 
 const initialState = {
   token: null,
@@ -65,19 +68,42 @@ export default reducer;
 
 export const checkAuthState = () => async (dispatch, getState) => {
   try {
+    // console.log("CHECKING STATE...");
+    let token = localStorage.getItem("ALGOMED_USER");
+
+    if (token) {
+      token = JSON.parse(token).token;
+    }
+
     const res = await fetch("/accounts/refresh-token", {
       method: "POST",
       credentials: "include",
-      headers: {},
+      headers: {
+        "Content-Type": "application/json",
+        "Set-Cookie": "SameSite=none",
+      },
     });
 
     const data = await res.json();
+
+    // const { data } = await axios.post(
+    //   "/accounts/refresh-token",
+    //   {},
+    //   {
+    //     withCredentials: true,
+    //     // headers: {
+    //     //   Authorization: "Bearer " + token,
+    //     // },
+    //   }
+    // );
+
     if (res.ok) {
       dispatch(login({ ...data, token: data.jwtToken, isAuthSet: true }));
       setAuthHeader(data.jwtToken);
     } else {
       console.log(data.message);
-      dispatch(login({ isAuthSet: true }));
+      // dispatch(login({ isAuthSet: true }));
+      dispatch(logout());
     }
   } catch (err) {
     console.log(err);
@@ -88,31 +114,88 @@ export const checkAuthState = () => async (dispatch, getState) => {
 
   // return { isAuthSet: true, ...userInfo };
 };
+// export const checkAuthState = () => async (dispatch, getState) => {
+//   try {
+//     const res = await fetch("/accounts/refresh-token", {
+//       method: "POST",
+//       credentials: "include",
+//       headers: {},
+//     });
 
+//     const data = await res.json();
+//     if (res.ok) {
+//       dispatch(login({ ...data, token: data.jwtToken, isAuthSet: true }));
+//       setAuthHeader(data.jwtToken);
+//     } else {
+//       console.log(data.message);
+//       dispatch(login({ isAuthSet: true }));
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     dispatch(logout());
+//   }
+
+//   // setAuthHeader(userInfo.token);
+
+//   // return { isAuthSet: true, ...userInfo };
+// };
+
+// function startRefreshTimer() {
+//   setInterval(async function () {
+//     try {
+//       const { data } = await axios.post("/accounts/refresh-token", {}, {withCredentials: true});
+//       // const res = await fetch("/accounts/refresh-token", {
+//       //   method: "POST",
+//       //   credentials: "include",
+//       // });
+
+//       // const data = await res.json();
+//       if (res.ok) {
+//         data.token = data.jwtToken;
+//         axios.defaults.headers.common["Authorization"] = "Bearer " + data.token;
+//         localStorage.setItem("ALGOMED_USER", data);
+//         setAuthHeader(data.token);
+//       }
+//     } catch (err) {
+//       console.log(err);
+//     }
+//     // }, 1000 * 60 * 60 * 15);
+//   }, 1000);
+// }
 function startRefreshTimer() {
-  setInterval(async function () {
+  if (timer) {
+    return;
+  }
+  timer = setInterval(async function () {
     try {
       const res = await fetch("/accounts/refresh-token", {
         method: "POST",
         credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "Set-Cookie": "SameSite=none",
+        },
       });
 
       const data = await res.json();
       if (res.ok) {
         data.token = data.jwtToken;
         axios.defaults.headers.common["Authorization"] = "Bearer " + data.token;
-        localStorage.setItem("ALGOMED_USER", data);
+        localStorage.setItem("ALGOMED_USER", JSON.stringify(data));
         setAuthHeader(data.token);
       }
     } catch (err) {
       console.log(err);
     }
   }, 1000 * 60 * 60 * 15);
+  // }, 1000);
 }
 
 export const revokeTokenAndLogout =
-  ({ token, cb }) =>
+  ({ cb }) =>
   async (dispatch) => {
+    const token = getCookie("refreshToken");
+
     try {
       await axios.post("/accounts/revoke-token", { token });
 
